@@ -15,6 +15,7 @@ public:
     static float getAverageRatio();
     static double getBestRatio();
     static void saveBrain(const QString &brain);
+    static QString getLastBrain();
 };
 
 #endif // DATABASEMANAGER_H

@@ -76,16 +76,7 @@ void SocketThread::readyRead()
             }
             else if(request == "getbrain")
             {
-                QFile currentBrain(Util::getLineFromConf("pathToBrains"));
-                if(currentBrain.open(QFile::ReadOnly))
-                {
-                    write("brain " + currentBrain.readAll());
-                }
-                else
-                {
-                    Util::writeError("Can't open job file : " + currentBrain.fileName());
-                    write("999");
-                }
+                write(DatabaseManager::getLastBrain());
             }
             else if(request.startsWith("sendbrain"))
             {
@@ -94,7 +85,7 @@ void SocketThread::readyRead()
                 QFile currentBrain(Util::getLineFromConf("pathToBrains"));
                 QJsonDocument receivedBrain = QJsonDocument::fromJson(currentBrain.readAll());
                 QJsonObject receivedObject = receivedBrain.object();
-                receivedObject["date"] = QDateTime::currentDateTime().toString("yyyy-MM-dd-hh-mm-ss-zzz");
+                receivedObject["date"] = QDateTime::currentDateTime().toString("yyyyMMddhhmmsszzz").toInt();
                 if(receivedObject["ratio"].toDouble() > DatabaseManager::getAverageRatio())
                 {
                     DatabaseManager::saveBrain(currentBrain.readAll());

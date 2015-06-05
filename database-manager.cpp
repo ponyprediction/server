@@ -145,3 +145,43 @@ void DatabaseManager::saveBrain(const QString &brain)
     }
 }
 
+QString DatabaseManager::getLastBrain()
+{
+    QString retour = QString();
+    init();
+    DBClientConnection db;
+    try
+    {
+        db.connect("localhost");
+    }
+    catch ( const mongo::DBException &e )
+    {
+        Util::writeError("Connexion à la DB échoué (DataBaseManager) : " +
+                         QString::fromStdString(e.toString()));
+    }
+    if(db.isStillConnected())
+    {
+        BSONObj projection;
+        Query query;
+        if(projection.isValid())
+        {
+            std::auto_ptr<DBClientCursor> cursor = db.query
+                    ("ponyprediction.brains",query.sort("date",-1),1,0,&projection);
+            if(cursor->more())
+            {
+                BSONObj result = cursor->next();
+                retour = QString::fromStdString(result.toString());
+            }
+        }
+        else
+        {
+            Util::writeError("Projection is not valid (getTrainerRaceCount)");
+        }
+    }
+    else
+    {
+        Util::writeError("Not connected to the DB");
+    }
+    return retour;
+}
+
