@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<conf>
+    <writeEnabled>              1   </writeEnabled>
+    <overwriteEnabled>          1   </overwriteEnabled>
+    <successEnabled>            1   </successEnabled>
+    <successOverwriteEnabled>   1   </successOverwriteEnabled>
+    <warningsEnabled>           1   </warningsEnabled>
+    <warningOverwriteEnabled>   1   </warningOverwriteEnabled>
+    <errorEnabled>              1   </errorEnabled>
+    <errorOverwriteEnabled>     1   </errorOverwriteEnabled>
+</conf>

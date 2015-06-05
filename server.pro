@@ -20,3 +20,6 @@ SOURCES += main.cpp \
 
 HEADERS += \
     util.hpp
+
+DISTFILES += \
+    conf.xml
