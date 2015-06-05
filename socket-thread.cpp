@@ -36,7 +36,6 @@ void SocketThread::run()
 void SocketThread::readyRead()
 {
     QString requestAll = read();
-    Util::write(requestAll);
     QStringList list = requestAll.split("\r\n");
     foreach (QString request, list)
     {
@@ -76,21 +75,18 @@ void SocketThread::readyRead()
             }
             else if(request == "getbrain")
             {
-                write(DatabaseManager::getLastBrain());
+                write("brain " + DatabaseManager::getLastBrain());
             }
             else if(request.startsWith("sendbrain"))
             {
-                //QJsonDocument receivedBrain = QJsonDocument::fromJson(request.remove(0,9).toUtf8());
-                //QJsonObject receivedObject = receivedBrain.object();
-                QFile currentBrain(Util::getLineFromConf("pathToBrains"));
-                QJsonDocument receivedBrain = QJsonDocument::fromJson(currentBrain.readAll());
+                QJsonDocument receivedBrain = QJsonDocument::fromJson(request.remove(0,9).toUtf8());
                 QJsonObject receivedObject = receivedBrain.object();
                 receivedObject["date"] = QDateTime::currentDateTime().toString("yyyyMMddhhmmsszzz").toInt();
                 if(receivedObject["ratio"].toDouble() > DatabaseManager::getAverageRatio())
                 {
-                    DatabaseManager::saveBrain(currentBrain.readAll());
+                    DatabaseManager::saveBrain(QString::fromStdString(receivedBrain.toJson().toStdString()));
                 }
-                write("received");
+                write("brainreceived");
             }
             else
             {
@@ -111,13 +107,16 @@ void SocketThread::disconnect()
 
 QString SocketThread::read()
 {
+
     QString request(socketClient->readAll());
     request = request.left(request.size()-2);
+    Util::write(request);
     return request;
 }
 
 bool SocketThread::write(QString answer)
 {
+    Util::write(answer);
     answer += "\r\n";
     if(socketClient->write(answer.toUtf8())!= -1)
     {
