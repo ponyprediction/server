@@ -24,5 +24,6 @@ int main(int argc, char *argv[])
         Util::writeSuccess("Server started on : " +
                            QString::number(server.serverPort()) + " !");
     }
+
     return a.exec();
 }

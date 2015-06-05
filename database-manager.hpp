@@ -2,7 +2,7 @@
 #define DATABASEMANAGER_H
 
 #include "mongo/client/dbclient.h"
-
+#include <QString>
 using namespace mongo;
 
 class DatabaseManager
@@ -14,6 +14,7 @@ public:
     static bool initialized;
     static float getAverageRatio();
     static double getBestRatio();
+    static void saveBrain(const QString &brain);
 };
 
 #endif // DATABASEMANAGER_H

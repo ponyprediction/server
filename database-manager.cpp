@@ -121,3 +121,27 @@ double DatabaseManager::getBestRatio()
     return retour;
 }
 
+void DatabaseManager::saveBrain(const QString &brain)
+{
+    init();
+    DBClientConnection db;
+    try
+    {
+        db.connect("localhost");
+    }
+    catch ( const mongo::DBException &e )
+    {
+        Util::writeError("Connexion à la DB échoué (DataBaseManager) : " +
+                         QString::fromStdString(e.toString()));
+    }
+    if(db.isStillConnected())
+    {
+        BSONObj brain = fromjson(brain.toString());
+        db.insert("ponyprediction.brain",brain);
+    }
+    else
+    {
+        Util::writeError("Not connected to the DB");
+    }
+}
+

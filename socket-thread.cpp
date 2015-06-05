@@ -8,6 +8,7 @@
 #include <QFile>
 #include <QJsonDocument>
 #include <QJsonObject>
+#include <QDateTime>
 #include "database-manager.hpp"
 
 SocketThread::SocketThread(int socketDescriptor):
@@ -90,9 +91,14 @@ void SocketThread::readyRead()
             {
                 //QJsonDocument receivedBrain = QJsonDocument::fromJson(request.remove(0,9).toUtf8());
                 //QJsonObject receivedObject = receivedBrain.object();
-                qDebug() << DatabaseManager::getAverageRatio();
-                //Read from database
-                //if(receivedObject["ratio"].toDouble() > )
+                QFile currentBrain(Util::getLineFromConf("pathToBrains"));
+                QJsonDocument receivedBrain = QJsonDocument::fromJson(currentBrain.readAll());
+                QJsonObject receivedObject = receivedBrain.object();
+                receivedObject["date"] = QDateTime::currentDateTime().toString("yyyy-MM-dd-hh-mm-ss-zzz");
+                if(receivedObject["ratio"].toDouble() > DatabaseManager::getAverageRatio())
+                {
+                    DatabaseManager::saveBrain(currentBrain.readAll());
+                }
                 write("received");
             }
             else
