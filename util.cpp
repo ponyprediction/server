@@ -4,7 +4,7 @@
 #include <iostream>
 #include <QFileInfo>
 #include <QDir>
-#include "VT100.h"
+#include "VT100.hpp"
 
 bool Util::overwriteEnabled = true;
 bool Util::minorMessagesEnabled = true;
