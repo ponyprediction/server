@@ -8,4 +8,5 @@
     <warningOverwriteEnabled>   1   </warningOverwriteEnabled>
     <errorEnabled>              1   </errorEnabled>
     <errorOverwriteEnabled>     1   </errorOverwriteEnabled>
+    <port>Port</port>
 </conf>

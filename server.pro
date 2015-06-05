@@ -5,7 +5,7 @@
 #-------------------------------------------------
 
 QT       += core
-
+QT += network
 QT       -= gui
 
 TARGET = server
@@ -16,10 +16,14 @@ TEMPLATE = app
 
 
 SOURCES += main.cpp \
-    util.cpp
+    util.cpp \
+    server.cpp \
+    socket-thread.cpp
 
 HEADERS += \
-    util.hpp
+    util.hpp \
+    server.hpp \
+    socket-thread.hpp
 
 DISTFILES += \
     conf.xml
