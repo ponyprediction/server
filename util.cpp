@@ -15,7 +15,9 @@ bool Util::warningOverwriteEnabled = true;
 bool Util::errorEnabled = true;
 bool Util::errorOverwriteEnabled = true;
 bool Util::isOverwriting = false;
-
+Server * Util::server = nullptr;
+QCoreApplication *Util::app = nullptr;
+QString Util::configFilePath = "./conf.xml";
 
 void Util::init()
 {
@@ -178,6 +180,39 @@ void Util::overwriteSuccess(const QString &message)
         writeSuccess(message);
 }
 
+void Util::initConfigFilePath(QCoreApplication *pApp)
+{
+    if(pApp->arguments().value(1) == "-c")
+    {
+        if(pApp->arguments().value(2) != NULL)
+        {
+            configFilePath = pApp->arguments().value(2);
+        }
+        else
+        {
+            Util::writeWarning("Invalid use : -c pathToConfigFile");
+        }
+    }
+}
+
+void Util::init(QCoreApplication *pApp, Server * pServer)
+{
+    Util::server = pServer;
+    Util::app = pApp;
+}
+
+void Util::catchUnixSignals(const std::vector<int>& quitSignals,
+                            const std::vector<int>& ignoreSignals) {
+    auto handler = [](int sig) ->void {
+        (void)sig;
+        server->close();
+        Util::app->quit();
+    };
+    for ( int sig : ignoreSignals )
+        signal(sig, SIG_IGN);
+    for ( int sig : quitSignals )
+        signal(sig, handler);
+}
 
 void Util::overwriteWarning(const QString &message)
 {
