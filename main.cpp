@@ -10,7 +10,7 @@ int main(int argc, char *argv[])
     Server server;
     Util::init(&a,&server);
 #ifdef  _WIN32
-    Util::log("Cannot handle ctrl+C : you're on windows... Sucker !");
+    Util::writeError("Cannot handle ctrl+C : you're on windows... Sucker !");
 #else
     Util::catchUnixSignals({SIGQUIT, SIGINT, SIGTERM, SIGHUP});
 #endif

@@ -22,6 +22,7 @@ private:
     QTcpSocket *socketClient;
     bool write(QString answer);
     QString read();
+    bool logged;
 };
 
 #endif // SOCKETTHREAD_H

@@ -11,6 +11,7 @@ SocketThread::SocketThread(int socketDescriptor):
     socketClient(new QTcpSocket())
 {
     socketClient->setSocketDescriptor(socketDescriptor);
+    logged = false;
     write("hi");
 }
 
@@ -36,6 +37,42 @@ void SocketThread::readyRead()
     {
         write("bye");
         disconnect();
+    }
+    else if (!logged)
+    {
+        if(request.startsWith("log"))
+        {
+            write("welcome");
+            logged = true;
+        }
+        else
+        {
+            write("wtf");
+        }
+    }
+    else if(logged)
+    {
+        if(request == "get-job")
+        {
+            QFile currentJob(Util::getLineFromConf("pathToJobs"));
+            if(currentJob.open(QFile::ReadOnly))
+            {
+                write("job " + currentJob.readAll());
+            }
+            else
+            {
+                Util::writeError("Can't open job file : " + currentJob.fileName());
+                write("999");
+            }
+        }
+        else
+        {
+            write("wtf");
+        }
+    }
+    else
+    {
+        write("wtf");
     }
 }
 
