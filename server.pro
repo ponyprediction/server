@@ -12,19 +12,31 @@ QT       -= gui
 TARGET = server
 CONFIG   += console
 CONFIG   -= app_bundle
-CONFIG += c++11
+
 TEMPLATE = app
 
 
 SOURCES += main.cpp \
     util.cpp \
     server.cpp \
-    socket-thread.cpp
+    socket-thread.cpp \
+    database-manager.cpp
 
 HEADERS += \
     util.hpp \
     server.hpp \
-    socket-thread.hpp
+    socket-thread.hpp \
+    database-manager.hpp
 
 DISTFILES += \
     conf.xml
+
+macx: LIBS += -L/usr/local/lib -lmongoclient -lboost_thread-mt -lboost_system -lboost_regex
+macx: INCLUDEPATH += /usr/local/include
+
+unix:!macx: LIBS += -L$$PWD/../../../stuff/mongo-client-install/lib/ -lmongoclient -lmongoclient -lboost_thread -lboost_system -lboost_regex
+
+unix:!macx:INCLUDEPATH += $$PWD/../../../stuff/mongo-client-install/include
+unix:!macx:DEPENDPATH += $$PWD/../../../stuff/mongo-client-install/include
+
+unix:!macx: PRE_TARGETDEPS += $$PWD/../../../stuff/mongo-client-install/lib/libmongoclient.a

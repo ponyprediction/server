@@ -12,7 +12,7 @@ int main(int argc, char *argv[])
 #ifdef  _WIN32
     Util::writeError("Cannot handle ctrl+C : you're on windows... Sucker !");
 #else
-    Util::catchUnixSignals({SIGQUIT, SIGINT, SIGTERM, SIGHUP});
+    //Util::catchUnixSignals({SIGQUIT, SIGINT, SIGTERM, SIGHUP});
 #endif
     if (!server.listen(QHostAddress::Any,
                        Util::getLineFromConf("port").toInt())) {

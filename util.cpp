@@ -203,15 +203,15 @@ void Util::init(QCoreApplication *pApp, Server * pServer)
 
 void Util::catchUnixSignals(const std::vector<int>& quitSignals,
                             const std::vector<int>& ignoreSignals) {
-    auto handler = [](int sig) ->void {
-        (void)sig;
-        server->close();
-        Util::app->quit();
-    };
+   /* //auto handler = [](int sig) ->void {
+        //(void)sig;
+        //server->close();
+        //Util::app->quit();
+    //};
     for ( int sig : ignoreSignals )
         signal(sig, SIG_IGN);
     for ( int sig : quitSignals )
-        signal(sig, handler);
+        signal(sig, handler);*/
 }
 
 void Util::overwriteWarning(const QString &message)
