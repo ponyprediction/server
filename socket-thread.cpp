@@ -6,6 +6,9 @@
 #include <QNetworkReply>
 #include <QUrlQuery>
 #include <QFile>
+#include <QJsonDocument>
+#include <QJsonObject>
+#include "database-manager.hpp"
 
 SocketThread::SocketThread(int socketDescriptor):
     socketClient(new QTcpSocket())
@@ -31,48 +34,76 @@ void SocketThread::run()
 
 void SocketThread::readyRead()
 {
-    QString request = read();
-    Util::write(request);
-    if (request == "exit")
+    QString requestAll = read();
+    Util::write(requestAll);
+    QStringList list = requestAll.split("\r\n");
+    foreach (QString request, list)
     {
-        write("bye");
-        disconnect();
-    }
-    else if (!logged)
-    {
-        if(request.startsWith("log"))
+        if (request == "exit")
         {
-            write("welcome");
-            logged = true;
+            write("bye");
+            disconnect();
         }
-        else
+        else if (!logged)
         {
-            write("wtf");
-        }
-    }
-    else if(logged)
-    {
-        if(request == "get-job")
-        {
-            QFile currentJob(Util::getLineFromConf("pathToJobs"));
-            if(currentJob.open(QFile::ReadOnly))
+            if(request.startsWith("log"))
             {
-                write("job " + currentJob.readAll());
+                logged = true;
+                write("welcome");
+
             }
             else
             {
-                Util::writeError("Can't open job file : " + currentJob.fileName());
-                write("999");
+                write("wtf");
+            }
+        }
+        else if(logged)
+        {
+            qDebug() << request;
+            if(request == "getjob")
+            {
+                QFile currentJob(Util::getLineFromConf("pathToJobs"));
+                if(currentJob.open(QFile::ReadOnly))
+                {
+                    write("job " + currentJob.readAll());
+                }
+                else
+                {
+                    Util::writeError("Can't open job file : " + currentJob.fileName());
+                    write("999");
+                }
+            }
+            else if(request == "getbrain")
+            {
+                QFile currentBrain(Util::getLineFromConf("pathToBrains"));
+                if(currentBrain.open(QFile::ReadOnly))
+                {
+                    write("brain " + currentBrain.readAll());
+                }
+                else
+                {
+                    Util::writeError("Can't open job file : " + currentBrain.fileName());
+                    write("999");
+                }
+            }
+            else if(request.startsWith("sendbrain"))
+            {
+                //QJsonDocument receivedBrain = QJsonDocument::fromJson(request.remove(0,9).toUtf8());
+                //QJsonObject receivedObject = receivedBrain.object();
+                qDebug() << DatabaseManager::getAverageRatio();
+                //Read from database
+                //if(receivedObject["ratio"].toDouble() > )
+                write("received");
+            }
+            else
+            {
+                write("wtf");
             }
         }
         else
         {
             write("wtf");
         }
-    }
-    else
-    {
-        write("wtf");
     }
 }
 
