@@ -1,6 +1,7 @@
 #include "database-manager.hpp"
 #include "mongo/bson/bson.h"
 #include "util.hpp"
+#include <iostream>
 
 bool DatabaseManager::initialized = false;
 
@@ -203,7 +204,7 @@ QString DatabaseManager::getLastBrain()
             if(cursor->more())
             {
                 BSONObj result = cursor->next();
-                retour = QString::fromStdString(result.toString());
+                retour = QString::fromStdString(result.toString(false,true));
             }
             else
             {
