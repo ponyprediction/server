@@ -60,12 +60,12 @@ void SocketThread::readyRead()
         else if(logged)
         {
             qDebug() << request;
-            if(request == "getjob")
+            if(request == "gettrainingset")
             {
                 QFile currentJob(Util::getLineFromConf("pathToJobs"));
                 if(currentJob.open(QFile::ReadOnly))
                 {
-                    write("job " + currentJob.readAll());
+                    write("trainingset " + currentJob.readAll());
                 }
                 else
                 {
