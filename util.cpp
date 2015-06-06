@@ -86,7 +86,7 @@ QString Util::getLineFromConf(const QString & id, bool * ok)
             }
         }
     }
-    if(output != "")
+    if(!output.size())
     {
         if(ok)
         {
