@@ -16,6 +16,7 @@ public:
     static double getBestRatio();
     static void saveBrain(const QString &brain);
     static QString getLastBrain();
+    static void createFirstBrain();
 };
 
 #endif // DATABASEMANAGER_H

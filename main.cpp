@@ -2,10 +2,12 @@
 #include "util.hpp"
 #include "server.hpp"
 #include <signal.h>
+#include "database-manager.hpp"
 
 int main(int argc, char *argv[])
 {
     QCoreApplication a(argc, argv);
+    DatabaseManager::createFirstBrain();
     Util::initConfigFilePath(&a);
     Server server;
     Util::init(&a,&server);
@@ -24,6 +26,5 @@ int main(int argc, char *argv[])
         Util::writeSuccess("Server started on : " +
                            QString::number(server.serverPort()) + " !");
     }
-
     return a.exec();
 }
