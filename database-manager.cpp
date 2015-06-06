@@ -204,7 +204,8 @@ QString DatabaseManager::getLastBrain()
             if(cursor->more())
             {
                 BSONObj result = cursor->next();
-                retour = QString::fromStdString(result.toString(false,true));
+                result = result.removeField("_id");
+                retour = QString::fromStdString(result.jsonString());
             }
             else
             {
