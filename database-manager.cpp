@@ -63,13 +63,16 @@ float DatabaseManager::getAverageRatio()
     {
         Util::writeError("Not connected to the DB");
     }
-    qDebug() << listRatio;
     float retour = 0;
-    for(int i = 0 ; i < listRatio.size(); i++)
+    if(listRatio.size() != 0)
     {
-        retour +=  listRatio[i];
+        for(int i = 0 ; i < listRatio.size(); i++)
+        {
+            retour +=  listRatio[i];
+        }
+        retour /=listRatio.size();
     }
-    return retour/listRatio.size();
+    return retour;
 }
 
 
