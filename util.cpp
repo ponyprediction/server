@@ -5,7 +5,6 @@
 #include <QFileInfo>
 #include <QDir>
 
-
 bool Util::writeEnabled = true;
 bool Util::overwriteEnabled = true;
 bool Util::successEnabled = true;
@@ -15,8 +14,8 @@ bool Util::warningOverwriteEnabled = true;
 bool Util::errorEnabled = true;
 bool Util::errorOverwriteEnabled = true;
 bool Util::isOverwriting = false;
-Server * Util::server = nullptr;
-QCoreApplication *Util::app = nullptr;
+Server * Util::server = 0;
+QCoreApplication *Util::app = 0;
 QString Util::configFilePath = "./conf.xml";
 
 void Util::init()
@@ -59,7 +58,7 @@ void Util::init()
     //
     if(!ok)
     {
-        throw std::runtime_error("Could not properly initialize the program.");
+        //throw std::runtime_error("Could not properly initialize the program.");
     }
 }
 

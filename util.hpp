@@ -31,12 +31,16 @@
 #include <QFile>
 #include "server.hpp"
 #include <QCoreApplication>
+
+#include <cstddef>
+#include <iostream>
+
 class Util {
 
 public:
 
     static void init();
-    static QString getLineFromConf(const QString & id, bool * ok = nullptr);
+    static QString getLineFromConf(const QString & id, bool * ok = 0);
     static void showFile(const QString & path);
     static bool createDir(const QString & path);
 

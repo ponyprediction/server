@@ -40,5 +40,3 @@ unix:!macx:INCLUDEPATH += $$PWD/../../../mongo-client-driver/include
 unix:!macx:DEPENDPATH += $$PWD/../../../mongo-client-driver/include
 
 unix:!macx: PRE_TARGETDEPS += $$PWD/../../../mongo-client-driver/lib/libmongoclient.a
-
-unix:!macx: CONFIG += C++11
