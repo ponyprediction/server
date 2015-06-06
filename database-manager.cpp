@@ -205,6 +205,11 @@ QString DatabaseManager::getLastBrain()
                 BSONObj result = cursor->next();
                 retour = QString::fromStdString(result.toString());
             }
+            else
+            {
+                createFirstBrain();
+                retour = getLastBrain();
+            }
         }
         else
         {
