@@ -145,6 +145,36 @@ void DatabaseManager::saveBrain(const QString &brain)
     }
 }
 
+void DatabaseManager::createFirstBrain()
+{
+    init();
+    DBClientConnection db;
+    try
+    {
+        db.connect("localhost");
+    }
+    catch ( const mongo::DBException &e )
+    {
+        Util::writeError("Connexion à la DB échoué (DataBaseManager) : " +
+                         QString::fromStdString(e.toString()));
+    }
+    if(db.isStillConnected())
+    {
+        QFile defaultbrain(Util::getLineFromConf("pathToBrains"));
+        if(defaultbrain.open(QFile::ReadOnly))
+        {
+            BSONObj brain = fromjson(defaultbrain.readAll());
+            if(db.count("ponyprediction.brains",brain) == 0)
+                db.insert("ponyprediction.brains",brain);
+        }
+    }
+    else
+    {
+        Util::writeError("Not connected to the DB");
+    }
+}
+
+
 QString DatabaseManager::getLastBrain()
 {
     QString retour = QString();
