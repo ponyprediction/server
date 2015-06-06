@@ -86,9 +86,12 @@ QString Util::getLineFromConf(const QString & id, bool * ok)
             }
         }
     }
-    if(!output.size())
+    if(output != "")
     {
-        *ok = false;
+        if(ok)
+        {
+            *ok = false;
+        }
         Util::writeError("can not find config line <" + id + ">");
     }
     return output;
@@ -203,7 +206,7 @@ void Util::init(QCoreApplication *pApp, Server * pServer)
 
 void Util::catchUnixSignals(const std::vector<int>& quitSignals,
                             const std::vector<int>& ignoreSignals) {
-   /* //auto handler = [](int sig) ->void {
+    /* //auto handler = [](int sig) ->void {
         //(void)sig;
         //server->close();
         //Util::app->quit();
