@@ -9,4 +9,7 @@
     <errorEnabled>              1   </errorEnabled>
     <errorOverwriteEnabled>     1   </errorOverwriteEnabled>
     <port>Port</port>
+    <port>50000</port>
+    <pathToJobs>pathToJobs</pathToJobs>
+    <pathToBrains>pathToBrains</pathToBrains>
 </conf>
