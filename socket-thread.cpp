@@ -60,7 +60,7 @@ void SocketThread::readyRead()
         else if(logged)
         {
             qDebug() << request;
-            if(request == "gettrainingset")
+            if(request.startsWith("gettrainingset"))
             {
                 QFile currentJob(Util::getLineFromConf("pathToJobs"));
                 if(currentJob.open(QFile::ReadOnly))
@@ -73,7 +73,7 @@ void SocketThread::readyRead()
                     write("999");
                 }
             }
-            else if(request == "getbrain")
+            else if(request.startsWith("getbrain"))
             {
                 write("brain " + DatabaseManager::getLastBrain());
             }
@@ -87,6 +87,10 @@ void SocketThread::readyRead()
                     DatabaseManager::saveBrain(QString::fromStdString(receivedBrain.toJson().toStdString()));
                 }
                 write("brainreceived");
+            }
+            else if(request.startsWith("getjobid"))
+            {
+                write("jobid -1");
             }
             else
             {

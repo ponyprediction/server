@@ -34,9 +34,9 @@ DISTFILES += \
 macx: LIBS += -L/usr/local/lib -lmongoclient -lboost_thread-mt -lboost_system -lboost_regex
 macx: INCLUDEPATH += /usr/local/include
 
-unix:!macx: LIBS += -L$$PWD/../../../mongo-client-driver/lib/ -lmongoclient -lmongoclient -lboost_thread -lboost_system -lboost_regex
+unix:!macx: LIBS += -L/home/loic/mongo-client-driver/lib/ -lmongoclient -lmongoclient -lboost_thread -lboost_system -lboost_regex
 
-unix:!macx:INCLUDEPATH += $$PWD/../../../mongo-client-driver/include
-unix:!macx:DEPENDPATH += $$PWD/../../../mongo-client-driver/include
+unix:!macx:INCLUDEPATH += /home/loic/mongo-client-driver/include
+unix:!macx:DEPENDPATH += /home/loic/mongo-client-driver/include
 
-unix:!macx: PRE_TARGETDEPS += $$PWD/../../../mongo-client-driver/lib/libmongoclient.a
+unix:!macx: PRE_TARGETDEPS += /home/loic/mongo-client-driver/lib/libmongoclient.a
