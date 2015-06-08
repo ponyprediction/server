@@ -130,7 +130,7 @@ double DatabaseManager::getBestRatio()
     return retour;
 }
 
-void DatabaseManager::saveBrain(const QString &brain)
+void DatabaseManager::saveBestBrain(const QString &brain)
 {
     init();
     DBClientConnection db;
@@ -148,7 +148,8 @@ void DatabaseManager::saveBrain(const QString &brain)
         BSONObj brainBson = fromjson(brain.toStdString());
         if(brainBson.isValid())
         {
-            db.insert("ponyprediction.brain",brainBson);
+            db.remove("ponyprediction.bestBrain",Query());
+            db.insert("ponyprediction.bestBrain",brainBson);
         }
         else
         {

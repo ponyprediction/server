@@ -14,7 +14,7 @@ public:
     static bool initialized;
     static float getAverageRatio();
     static double getBestRatio();
-    static void saveBrain(const QString &brain);
+    static void saveBestBrain(const QString &brain);
     static QString getLastBrain();
     static void createFirstBrain();
 };

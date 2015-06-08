@@ -83,7 +83,7 @@ void SocketThread::readyRead()
                 {
                     if(receivedBrain["ratio"]._numberDouble() > DatabaseManager::getAverageRatio())
                     {
-                        DatabaseManager::saveBrain(QString::fromStdString(receivedBrain.jsonString()));
+                        DatabaseManager::saveBestBrain(QString::fromStdString(receivedBrain.jsonString()));
                     }
                 }
                 write("brainreceived");
