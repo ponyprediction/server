@@ -59,7 +59,6 @@ void SocketThread::readyRead()
         }
         else if(logged)
         {
-            qDebug() << request;
             if(request.startsWith("gettrainingset"))
             {
                 QFile currentJob(Util::getLineFromConf("pathToJobs"));
@@ -81,8 +80,11 @@ void SocketThread::readyRead()
             {
                 QJsonDocument receivedBrain = QJsonDocument::fromJson(request.remove(0,9).toUtf8());
                 QJsonObject receivedObject = receivedBrain.object();
-                receivedObject["date"] = QDateTime::currentDateTime().toString("yyyyMMddhhmmsszzz").toInt();
-                if(receivedObject["ratio"].toDouble() > DatabaseManager::getAverageRatio())
+                receivedObject.insert("date",QDateTime::currentDateTime().toString("yyyyMMddhhmmsszzz").toDouble());
+                receivedBrain.setObject(receivedObject);
+                //Util::writeError(QDateTime::currentDateTime().toString("yyyyMMddhhmmsszzz"));
+                Util::writeError(receivedObject.value("ratio").toString() + " > " + QString::number(DatabaseManager::getAverageRatio()));
+                if(receivedObject.value("ratio").toDouble() > DatabaseManager::getAverageRatio())
                 {
                     DatabaseManager::saveBrain(QString::fromStdString(receivedBrain.toJson().toStdString()));
                 }

@@ -169,7 +169,13 @@ void DatabaseManager::createFirstBrain()
         {
             BSONObj brain = fromjson(defaultbrain.readAll());
             if(db.count("ponyprediction.brains",brain) == 0)
+            {
                 db.insert("ponyprediction.brains",brain);
+            }
+        }
+        else
+        {
+            Util::writeError("Can't find the default brain");
         }
     }
     else
