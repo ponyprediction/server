@@ -40,18 +40,22 @@ float DatabaseManager::getAverageRatio()
     }
     if(db.isStillConnected())
     {
-        BSONObj projection = fromjson("{ratio:-1}");//= BSON();
-        Query query;
+        BSONObj projection = BSON("ratio" << 1);
+        BSONObj query;
         if(projection.isValid())
         {
             std::auto_ptr<DBClientCursor> cursor = db.query
-                    ("ponyprediction.brains",query.sort("date",-1),100,0,&projection);
+                    ("ponyprediction.brains",query,100,0,&projection);
             while(cursor->more())
             {
                 BSONObj result = cursor->next();
                 if(result.hasField("ratio"))
                 {
-                    listRatio.push_back((float)result["ratio"]._numberDouble());
+                    listRatio.push_back(QString::fromStdString(result["ratio"].valuestr()).toDouble());
+                }
+                else
+                {
+                    Util::writeError("No field ratio (getAverageRatio)");
                 }
             }
         }
@@ -64,6 +68,7 @@ float DatabaseManager::getAverageRatio()
     {
         Util::writeError("Not connected to the DB");
     }
+    qDebug() << listRatio;
     float retour = 0;
     if(listRatio.size() != 0)
     {
@@ -140,8 +145,15 @@ void DatabaseManager::saveBrain(const QString &brain)
     }
     if(db.isStillConnected())
     {
-        BSONObj brain = fromjson(brain.toString());
-        db.insert("ponyprediction.brain",brain);
+        BSONObj brainBson = fromjson(brain.toStdString());
+        if(brainBson.isValid())
+        {
+            db.insert("ponyprediction.brain",brainBson);
+        }
+        else
+        {
+            Util::writeError("Not valid");
+        }
     }
     else
     {
@@ -168,7 +180,7 @@ void DatabaseManager::createFirstBrain()
         if(defaultbrain.open(QFile::ReadOnly))
         {
             BSONObj brain = fromjson(defaultbrain.readAll());
-            if(db.count("ponyprediction.brains",brain) == 0)
+            //if(db.count("ponyprediction.brains",brain) == 0)
             {
                 db.insert("ponyprediction.brains",brain);
             }

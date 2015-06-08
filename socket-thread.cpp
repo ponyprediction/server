@@ -78,15 +78,13 @@ void SocketThread::readyRead()
             }
             else if(request.startsWith("sendbrain"))
             {
-                QJsonDocument receivedBrain = QJsonDocument::fromJson(request.remove(0,9).toUtf8());
-                QJsonObject receivedObject = receivedBrain.object();
-                receivedObject.insert("date",QDateTime::currentDateTime().toString("yyyyMMddhhmmsszzz").toDouble());
-                receivedBrain.setObject(receivedObject);
-                //Util::writeError(QDateTime::currentDateTime().toString("yyyyMMddhhmmsszzz"));
-                Util::writeError(receivedObject.value("ratio").toString() + " > " + QString::number(DatabaseManager::getAverageRatio()));
-                if(receivedObject.value("ratio").toDouble() > DatabaseManager::getAverageRatio())
+                mongo::BSONObj receivedBrain= fromjson(request.remove(0,9).toUtf8());
+                if(receivedBrain.hasField("ratio"))
                 {
-                    DatabaseManager::saveBrain(QString::fromStdString(receivedBrain.toJson().toStdString()));
+                    if(receivedBrain["ratio"]._numberDouble() > DatabaseManager::getAverageRatio())
+                    {
+                        DatabaseManager::saveBrain(QString::fromStdString(receivedBrain.jsonString()));
+                    }
                 }
                 write("brainreceived");
             }
