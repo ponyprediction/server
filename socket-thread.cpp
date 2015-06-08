@@ -85,6 +85,7 @@ void SocketThread::readyRead()
                     {
                         DatabaseManager::saveBestBrain(QString::fromStdString(receivedBrain.jsonString()));
                     }
+                    DatabaseManager::saveBrain(QString::fromStdString(receivedBrain.jsonString()));
                 }
                 write("brainreceived");
             }

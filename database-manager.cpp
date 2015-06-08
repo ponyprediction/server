@@ -162,6 +162,41 @@ void DatabaseManager::saveBestBrain(const QString &brain)
     }
 }
 
+void DatabaseManager::saveBrain(const QString &brain)
+{
+    init();
+    DBClientConnection db;
+    try
+    {
+        db.connect("localhost");
+    }
+    catch ( const mongo::DBException &e )
+    {
+        Util::writeError("Connexion à la DB échoué (DataBaseManager) : " +
+                         QString::fromStdString(e.toString()));
+    }
+    if(db.isStillConnected())
+    {
+        BSONObj brainBson = fromjson(brain.toStdString());
+        if(brainBson.isValid())
+        {
+            if(db.count("ponyprediction.brains",Query()) >= 100)
+            {
+                db.remove("ponyprediction.brains",Query(),true);
+            }
+            db.insert("ponyprediction.brains",brainBson);
+        }
+        else
+        {
+            Util::writeError("Not valid");
+        }
+    }
+    else
+    {
+        Util::writeError("Not connected to the DB");
+    }
+}
+
 void DatabaseManager::createFirstBrain()
 {
     init();
