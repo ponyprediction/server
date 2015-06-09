@@ -81,7 +81,10 @@ void SocketThread::readyRead()
                 mongo::BSONObj receivedBrain= fromjson(request.remove(0,9).toUtf8());
                 if(receivedBrain.hasField("ratio"))
                 {
-                    if(receivedBrain["ratio"]._numberDouble() > DatabaseManager::getAverageRatio())
+                    qDebug() << QString::fromStdString(receivedBrain.getField("ratio").toString());
+                    qDebug() <<">";
+                    qDebug() <<DatabaseManager::getAverageRatio();
+                    if(receivedBrain.getField("ratio").numberDouble() > DatabaseManager::getAverageRatio())
                     {
                         DatabaseManager::saveBestBrain(QString::fromStdString(receivedBrain.jsonString()));
                     }
@@ -121,7 +124,7 @@ QString SocketThread::read()
 
 bool SocketThread::write(QString answer)
 {
-    Util::write(answer);
+    //Util::write(answer);
     answer += "\r\n";
     if(socketClient->write(answer.toUtf8())!= -1)
     {

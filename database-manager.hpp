@@ -12,7 +12,7 @@ public:
     ~DatabaseManager();
     static void init();
     static bool initialized;
-    static float getAverageRatio();
+    static double getAverageRatio();
     static double getBestRatio();
     static void saveBestBrain(const QString &brain);
     static void saveBrain(const QString &brain);

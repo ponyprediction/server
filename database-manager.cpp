@@ -24,7 +24,7 @@ void DatabaseManager::init()
     }
 }
 
-float DatabaseManager::getAverageRatio()
+double DatabaseManager::getAverageRatio()
 {
     QVector<float> listRatio;
     init();
@@ -68,8 +68,7 @@ float DatabaseManager::getAverageRatio()
     {
         Util::writeError("Not connected to the DB");
     }
-    qDebug() << listRatio;
-    float retour = 0;
+    double retour = 0;
     if(listRatio.size() != 0)
     {
         for(int i = 0 ; i < listRatio.size(); i++)
@@ -216,7 +215,7 @@ void DatabaseManager::createFirstBrain()
         if(defaultbrain.open(QFile::ReadOnly))
         {
             BSONObj brain = fromjson(defaultbrain.readAll());
-            //if(db.count("ponyprediction.brains",brain) == 0)
+            if(db.count("ponyprediction.brains",brain) == 0)
             {
                 db.insert("ponyprediction.brains",brain);
             }
