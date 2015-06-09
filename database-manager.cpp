@@ -215,9 +215,9 @@ void DatabaseManager::createFirstBrain()
         if(defaultbrain.open(QFile::ReadOnly))
         {
             BSONObj brain = fromjson(defaultbrain.readAll());
-            if(db.count("ponyprediction.brains",brain) == 0)
+            if(db.count("ponyprediction.bestBrain",brain) == 0)
             {
-                db.insert("ponyprediction.brains",brain);
+                db.insert("ponyprediction.bestBrain",brain);
             }
         }
         else
@@ -253,7 +253,7 @@ QString DatabaseManager::getLastBrain()
         if(projection.isValid())
         {
             std::auto_ptr<DBClientCursor> cursor = db.query
-                    ("ponyprediction.brains",query.sort("date",-1),1,0,&projection);
+                    ("ponyprediction.bestBrain",query,1,0,&projection);
             if(cursor->more())
             {
                 BSONObj result = cursor->next();
