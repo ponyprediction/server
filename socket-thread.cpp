@@ -79,16 +79,22 @@ void SocketThread::readyRead()
             else if(request.startsWith("sendbrain"))
             {
                 mongo::BSONObj receivedBrain= fromjson(request.remove(0,9).toUtf8());
-                if(receivedBrain.hasField("ratio"))
+                BSONObjBuilder builder;
+                builder.appendElements(receivedBrain);
+                builder.appendDate("date",mongo::jsTime());
+                BSONObj brainWithDate = builder.done();
+                //qDebug() << QString::fromStdString(brainWithDate.jsonString());
+                if(brainWithDate.hasField("ratio") && brainWithDate.isValid())
                 {
-                    qDebug() << QString::fromStdString(receivedBrain.getField("ratio").toString());
-                    qDebug() <<">";
-                    qDebug() <<DatabaseManager::getAverageRatio();
-                    if(receivedBrain.getField("ratio").numberDouble() > DatabaseManager::getAverageRatio())
+                    if(brainWithDate.getField("ratio").numberDouble() > DatabaseManager::getAverageRatio())
                     {
-                        DatabaseManager::saveBestBrain(QString::fromStdString(receivedBrain.jsonString()));
+                        DatabaseManager::saveBestBrain(QString::fromStdString(brainWithDate.jsonString()));
                     }
-                    DatabaseManager::saveBrain(QString::fromStdString(receivedBrain.jsonString()));
+                    DatabaseManager::saveBrain(QString::fromStdString(brainWithDate.jsonString()));
+                }
+                else
+                {
+                    Util::writeError("Unvalid brainwithDate or no field ratio (saveBrain)");
                 }
                 write("brainreceived");
             }
@@ -118,7 +124,7 @@ QString SocketThread::read()
 
     QString request(socketClient->readAll());
     request = request.left(request.size()-2);
-    Util::write(request);
+    //Util::write(request);
     return request;
 }
 

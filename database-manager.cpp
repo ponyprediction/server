@@ -51,7 +51,7 @@ double DatabaseManager::getAverageRatio()
                 BSONObj result = cursor->next();
                 if(result.hasField("ratio"))
                 {
-                    listRatio.push_back(QString::fromStdString(result["ratio"].valuestr()).toDouble());
+                    listRatio.push_back(result["ratio"].numberDouble());
                 }
                 else
                 {
@@ -69,6 +69,7 @@ double DatabaseManager::getAverageRatio()
         Util::writeError("Not connected to the DB");
     }
     double retour = 0;
+    qDebug() << listRatio;
     if(listRatio.size() != 0)
     {
         for(int i = 0 ; i < listRatio.size(); i++)
@@ -181,7 +182,22 @@ void DatabaseManager::saveBrain(const QString &brain)
         {
             if(db.count("ponyprediction.brains",Query()) >= 100)
             {
-                db.remove("ponyprediction.brains",Query(),true);
+                BSONObj projection;
+                std::auto_ptr<DBClientCursor> cursor = db.query("ponyprediction.brains",Query().sort("date"),1,0,&projection);
+                if(cursor->more())
+                {
+                    BSONObj result = cursor->next();
+                    //delete by date
+                    if(result.hasField("date"))
+                    {
+                        BSONObj query = BSON("date" << result["date"].toString());
+                        db.remove("ponyprediction.brains",Query(),true);
+                    }
+                    else
+                    {
+                        Util::writeError("Can't find");
+                    }
+                }
             }
             db.insert("ponyprediction.brains",brainBson);
         }
@@ -215,9 +231,13 @@ void DatabaseManager::createFirstBrain()
         if(defaultbrain.open(QFile::ReadOnly))
         {
             BSONObj brain = fromjson(defaultbrain.readAll());
-            if(db.count("ponyprediction.bestBrain",brain) == 0)
+            BSONObjBuilder builder;
+            builder.appendElements(brain);
+            builder.appendDate("date",0);
+            BSONObj brainWithDate = builder.done();
+            if(db.count("ponyprediction.bestBrain",brainWithDate) == 0)
             {
-                db.insert("ponyprediction.bestBrain",brain);
+                db.insert("ponyprediction.bestBrain",brainWithDate);
             }
         }
         else
