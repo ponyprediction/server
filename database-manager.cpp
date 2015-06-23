@@ -84,7 +84,6 @@ double DatabaseManager::getAverageRatio()
         Util::writeError("Not connected to the DB");
     }
     double retour = 0;
-    qDebug() << listRatio;
     if(listRatio.size() != 0)
     {
         for(int i = 0 ; i < listRatio.size(); i++)
@@ -195,9 +194,7 @@ void DatabaseManager::saveBrain(const QString &brain)
         BSONObj brainBson = fromjson(brain.toStdString());
         if(brainBson.isValid())
         {
-            Util::writeError("INSERT");
             db.insert("ponyprediction.brains",brainBson);
-            Util::writeError("AFTER?INSERT");
         }
         else
         {
