@@ -21,6 +21,21 @@ void DatabaseManager::init()
     {
         initialized = true;
         mongo::client::initialize();
+        DBClientConnection db;
+        try
+        {
+            db.connect("localhost");
+        }
+        catch ( const mongo::DBException &e )
+        {
+            Util::writeError("Connexion à la DB échoué (DataBaseManager) : " +
+                             QString::fromStdString(e.toString()));
+        }
+        if(db.isStillConnected())
+        {
+            db.dropCollection("ponyprediction.brains");
+            db.createCollection("ponyprediction.brains",5242880,true,100);
+        }
     }
 }
 
@@ -180,26 +195,9 @@ void DatabaseManager::saveBrain(const QString &brain)
         BSONObj brainBson = fromjson(brain.toStdString());
         if(brainBson.isValid())
         {
-            if(db.count("ponyprediction.brains",Query()) >= 100)
-            {
-                BSONObj projection;
-                std::auto_ptr<DBClientCursor> cursor = db.query("ponyprediction.brains",Query().sort("date"),1,0,&projection);
-                if(cursor->more())
-                {
-                    BSONObj result = cursor->next();
-                    //delete by date
-                    if(result.hasField("date"))
-                    {
-                        BSONObj query = BSON("date" << result["date"].toString());
-                        db.remove("ponyprediction.brains",Query(),true);
-                    }
-                    else
-                    {
-                        Util::writeError("Can't find");
-                    }
-                }
-            }
+            Util::writeError("INSERT");
             db.insert("ponyprediction.brains",brainBson);
+            Util::writeError("AFTER?INSERT");
         }
         else
         {
